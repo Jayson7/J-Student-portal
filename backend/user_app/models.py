@@ -1,7 +1,8 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
-# Predefined list of countries (you can expand this or use django-countries package)
+# Predefined list of countries (simplified for now)
 COUNTRY_CHOICES = [
     ("NG", "Nigeria"),
     ("US", "United States"),
@@ -12,36 +13,62 @@ COUNTRY_CHOICES = [
 ]
 
 
-class Student(models.Model):
-    student_id = models.CharField(max_length=20, unique=True)
-    name = models.CharField(max_length=100)
-    age = models.PositiveIntegerField()
-    email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=15, unique=True)
-    country = models.CharField(max_length=50, choices=COUNTRY_CHOICES, default="NG")
-    date_of_birth = models.DateField(null=True, blank=True)
-    enrolled_date = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+class ClassRoom(models.Model):
+    """Represents a school class (e.g., JSS1, SS2, 100 Level, etc.)."""
+    name = models.CharField(max_length=50, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["name"]
 
     def __str__(self):
-        return f"{self.name} ({self.student_id})"
+        return self.name
+
+
+class Student(models.Model):
+    """Student profile, linked to Django User for authentication."""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="student_profile")
+    student_id = models.CharField(max_length=20, unique=True)
+    age = models.PositiveIntegerField()
+    phone_number = models.CharField(max_length=15, unique=True)
+    country = models.CharField(max_length=50, choices=COUNTRY_CHOICES, default="NG")
+    date_of_birth = models.DateField(null=True, blank=True)
+    classroom = models.ForeignKey(ClassRoom, on_delete=models.SET_NULL, null=True, blank=True, related_name="students")
+    enrolled_date = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["user__username"]
+
+    def __str__(self):
+        return f"{self.user.get_full_name()} ({self.student_id})"
 
 
 class Teacher(models.Model):
+    """Teacher profile, linked to Django User."""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="teacher_profile")
     teacher_id = models.CharField(max_length=20, unique=True)
-    name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=15, unique=True)
     country = models.CharField(max_length=50, choices=COUNTRY_CHOICES, default="NG")
     specialization = models.CharField(max_length=100)
     hire_date = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    is_hod = models.BooleanField(default=False)  # Promotion/Demotion to HOD
 
     class Meta:
-        ordering = ["name"]
+        ordering = ["user__username"]
 
     def __str__(self):
-        return f"{self.name} - {self.specialization}"
+        role = "HOD" if self.is_hod else "Teacher"
+        return f"{self.user.get_full_name()} - {role}"
+
+
+class AdminProfile(models.Model):
+    """Separate Admin profile for managing Teachers & HOD promotions."""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="admin_profile")
+    phone_number = models.CharField(max_length=15, unique=True)
+    country = models.CharField(max_length=50, choices=COUNTRY_CHOICES, default="NG")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Admin - {self.user.get_full_name()}"
