@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'authentication',
     'user_app',
     'rest_framework_simplejwt',
+    "rest_framework_simplejwt.token_blacklist", 
 ]
 
 MIDDLEWARE = [
@@ -103,7 +104,12 @@ USE_L10N = True
 USE_TZ = True
 
 
-LOGIN_REDIRECT_URL = ''  
+AUTH_USER_MODEL = "authentication.CustomUser"
+
+LOGIN_REDIRECT_URL = "/"   # redirect after login
+LOGOUT_REDIRECT_URL = "/"  # redirect after logout
+LOGIN_URL = "/login/"      # if not logged in, redirect here
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/

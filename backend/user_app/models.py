@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings  # ✅ use custom user model if defined
 
 
 # Predefined list of countries (simplified for now)
@@ -26,8 +26,8 @@ class ClassRoom(models.Model):
 
 
 class Student(models.Model):
-    """Student profile, linked to Django User for authentication."""
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="student_profile")
+    """Student profile, linked to User model."""
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="student_profile")
     student_id = models.CharField(max_length=20, unique=True)
     age = models.PositiveIntegerField()
     phone_number = models.CharField(max_length=15, unique=True)
@@ -45,8 +45,8 @@ class Student(models.Model):
 
 
 class Teacher(models.Model):
-    """Teacher profile, linked to Django User."""
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="teacher_profile")
+    """Teacher profile, linked to User model."""
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="teacher_profile")
     teacher_id = models.CharField(max_length=20, unique=True)
     phone_number = models.CharField(max_length=15, unique=True)
     country = models.CharField(max_length=50, choices=COUNTRY_CHOICES, default="NG")
@@ -65,7 +65,7 @@ class Teacher(models.Model):
 
 class AdminProfile(models.Model):
     """Separate Admin profile for managing Teachers & HOD promotions."""
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="admin_profile")
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="admin_profile")
     phone_number = models.CharField(max_length=15, unique=True)
     country = models.CharField(max_length=50, choices=COUNTRY_CHOICES, default="NG")
     created_at = models.DateTimeField(auto_now_add=True)
