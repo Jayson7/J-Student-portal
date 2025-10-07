@@ -18,7 +18,15 @@ function Nav() {
     <BrowserRouter>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <div className="container-fluid">
-          <Link className="navbar-brand text-capitalize text-success " to="/">
+          <Link
+            className="navbar-brand text-capitalize text-success "
+            style={{
+              fontFamily: "Dancing Script",
+              fontWeight: 700,
+              fontSize: "35px",
+            }}
+            to="/"
+          >
             J-LMS
           </Link>
           <button
