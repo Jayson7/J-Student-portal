@@ -1,6 +1,6 @@
 // src/pages/Home.js
 import React from "react";
-import Nav from "../components/Nav";
+// import Nav from "../components/Nav";
 
 function Home() {
   return (

@@ -1,7 +1,10 @@
 // src/components/Nav.jsx
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
+import { BrowserRouter, Link, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/login";
+import Register from "./pages/register";
 
 function Nav() {
   const handleLogout = () => {
@@ -12,7 +15,7 @@ function Nav() {
   const isLoggedin = useState(false);
 
   return (
-    <>
+    <BrowserRouter>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <div className="container-fluid">
           <Link className="navbar-brand text-capitalize text-success " to="/">
@@ -69,7 +72,15 @@ function Nav() {
           </div>
         </div>
       </nav>
-    </>
+
+      {/* routes and switch */}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        {/* <Route path="*" element={<NotFound />} /> */}
+      </Routes>
+    </BrowserRouter>
   );
 }
 
