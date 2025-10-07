@@ -10,7 +10,12 @@ SECRET_KEY = 'django-insecure-n9c+4@*fh5hsc@twng3*ln31xzc+5f5$lwd2l-$k%h1!uw_u+j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [""]
+ALLOWED_HOSTS = []
+
+
+
+
+
 
 
 # Application definition
@@ -27,6 +32,8 @@ INSTALLED_APPS = [
     'user_app',
     'rest_framework_simplejwt',
     "rest_framework_simplejwt.token_blacklist", 
+    "courses",
+    "exam"
 ]
 
 MIDDLEWARE = [
