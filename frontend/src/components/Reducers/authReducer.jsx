@@ -1,4 +1,4 @@
-import { ServerRouter } from "react-router-dom";
+import ServiceApi from "../services/service";
 
 const initialState = {
   id: null,
@@ -21,7 +21,7 @@ export const USER_SUCCESS = "user/SUCCESS";
 
 export const USER_FAIL = "user/FAIL";
 
-export default function userReducer(state = initialState, action) {
+export default function authReducer(state = initialState, action) {
   switch (action.type) {
     case USER_REQUEST:
       return { ...state, loading: true, error: null };
@@ -44,7 +44,7 @@ export default function userReducer(state = initialState, action) {
 export const fetchUser = (id) => async (dispatch) => {
   dispatch({ type: USER_REQUEST });
   try {
-    const res = await ServerRouter.get(`/users/${id}`); // your axios/fetch wrapper
+    const res = await ServiceApi.get(`/users/${id}`); // your axios/fetch wrapper
     dispatch({ type: USER_SUCCESS, payload: res.data });
   } catch (e) {
     dispatch({ type: USER_FAIL, payload: e.message });

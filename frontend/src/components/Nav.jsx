@@ -1,25 +1,25 @@
 // src/components/Nav.jsx
-import React, { useState } from "react";
-
+import React from "react";
 import { BrowserRouter, Link, Routes, Route } from "react-router-dom";
+import { useSelector } from "react-redux";
 import Home from "./pages/Home";
-import Login from "./pages/login";
+import LoginButton from "./Algorithm/loginAuth";
 import Register from "./pages/register";
+import NotFound from "./pages/notFound";
+import Logout from "./Algorithm/Logout";
+import Login from "./pages/login";
 
 function Nav() {
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/login";
-  };
-
-  const isLoggedin = useState(false);
+  // true  -> user has access token
+  // false -> anonymous
+  const isLoggedIn = useSelector((s) => Boolean(s.token.token));
 
   return (
     <BrowserRouter>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div className="container-fluid">
           <Link
-            className="navbar-brand text-capitalize text-success "
+            className="navbar-brand text-capitalize text-success"
             style={{
               fontFamily: "Dancing Script",
               fontWeight: 700,
@@ -29,14 +29,16 @@ function Nav() {
           >
             J-LMS
           </Link>
+
           <button
             className="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNav"
           >
-            <span className="navbar-toggler-icon"></span>
+            <span className="navbar-toggler-icon" />
           </button>
+
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav mx-auto">
               <li className="nav-item">
@@ -71,22 +73,34 @@ function Nav() {
               </li>
             </ul>
 
-            <button
-              className="btn btn-outline-light mx-sm-0"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
+            {/* RIGHT-SIDE BUTTONS */}
+            <div className="d-flex gap-2">
+              {isLoggedIn ? (
+                <Logout>
+                  {(onClick, loading) => (
+                    <button
+                      className="btn btn-sm btn-outline-danger"
+                      onClick={onClick}
+                      disabled={loading}
+                    >
+                      {loading ? "Logging out…" : "Logout"}
+                    </button>
+                  )}
+                </Logout>
+              ) : (
+                <LoginButton /> // reusable login component
+              )}
+            </div>
           </div>
         </div>
       </nav>
 
-      {/* routes and switch */}
+      {/* ROUTES */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        {/* <Route path="*" element={<NotFound />} /> */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
