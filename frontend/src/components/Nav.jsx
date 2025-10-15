@@ -2,7 +2,7 @@
 import React from "react";
 import { BrowserRouter, Link, Routes, Route } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Home from "./pages/Home";
+import Home from "./pages/HomepageComponent/Home";
 import LoginButton from "./Algorithm/loginAuth";
 import Register from "./pages/register";
 import NotFound from "./pages/notFound";
@@ -48,12 +48,12 @@ function Nav() {
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/">
-                  All students
+                  Class
                 </Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/">
-                  All teachers
+                  Courses
                 </Link>
               </li>
               <li className="nav-item">

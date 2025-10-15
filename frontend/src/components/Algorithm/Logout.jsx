@@ -1,32 +1,22 @@
+// src/components/pages/Logout.jsx
 import React from "react";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../Reducers/tokenReducer"; // path to your action
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { logout } from "../Reducers/tokenReducer"; // adjust path
 
-/**
- * Logout
- * Usage:
- *   <Logout>
- *     {(handleLogout, loading) => (
- *       <button onClick={handleLogout} disabled={loading}>
- *         {loading ? "Logging out…" : "Logout"}
- *       </button>
- *     )}
- *   </Logout>
- *
- *   – or –
- *
- *   <Logout>
- *     {(handleLogout) => <FiLogOut onClick={handleLogout} />}
- *   </Logout>
- */
 function Logout({ children }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const loading = useSelector((s) => s.token.loading);
 
-  const handleLogout = () => dispatch(logout());
+  const handleLogout = async () => {
+    await dispatch(logout()); // wait for Redux + purge
+    toast.success("Logout successful");
+    navigate("/login"); // redirect after toast
+  };
 
-  // children must be a function: (onClick, loading) => <AnyJSX />
   return <>{children(handleLogout, loading)}</>;
 }
 

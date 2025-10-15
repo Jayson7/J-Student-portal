@@ -1,40 +1,42 @@
 // src/pages/Login.js
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom"; // v6
+import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchToken } from "../Reducers/tokenReducer"; // adjust path
+import { toast, ToastContainer } from "react-toastify";
+import { fetchToken } from "../Reducers/tokenReducer";
+import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // read Redux state
-  const {
-    token,
-    loading,
-    error: storeError,
-  } = useSelector((state) => state.token);
+  const { token, loading, error: storeError } = useSelector((s) => s.token);
 
-  // local form state only for inputs
   const [form, setForm] = useState({ username: "", password: "" });
 
-  // when token appears, go home
-  const hasToken = Boolean(token);
-
+  /* ---------- side effects -> toast ---------- */
   useEffect(() => {
-    if (hasToken) {
+    if (token) {
+      toast.success("You've signed in");
       navigate("/");
     }
-  }, [hasToken, navigate]);
+  }, [token, navigate]);
 
+  useEffect(() => {
+    if (storeError) toast.error(storeError);
+  }, [storeError]);
+
+  /* ---------- handlers ---------- */
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(fetchToken(form)); // credentials -> Redux
+    toast.success("You've signed in");
+    dispatch(fetchToken(form));
   };
 
+  /* ---------- render ---------- */
   return (
     <div className="d-flex flex-column justify-content-center align-items-center vh-100 bg-light">
       <div className="card shadow-lg p-4" style={{ width: 350 }}>
@@ -42,14 +44,12 @@ function Login() {
           Welcome Back
         </h3>
         <h6 className="text-center fw-light mb-4 text-muted">
-          {" "}
-          Sign In Access your account
+          Sign In to access your account
         </h6>
-        {storeError && <div className="alert alert-danger">{storeError}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label className="form-label">Email</label>
+            <label className="form-label">Username</label>
             <input
               type="text"
               name="username"
@@ -104,9 +104,21 @@ function Login() {
         </div>
 
         <div className="text-center mt-3 my-4">
-          Don’t have an account? <Link to={"register"}>Sign up</Link>
+          Don’t have an account? <Link to="/register">Sign up</Link>
         </div>
       </div>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        theme="colored"
+      />
     </div>
   );
 }
